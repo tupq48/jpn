@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hiragana Practice</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+      background-color: #f5f5f5;
+    }
+    .card, .drawing-container {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .romaji {
+      font-size: 72px;
+      margin: 30px 0;
+      height: 80px;
+      font-weight: bold;
+      color: #333;
+    }
+    .answer {
+      font-size: 100px;
+      margin: 30px 0;
+      height: 120px;
+      opacity: 0;
+    }
+    .visible {
+      opacity: 1;
+    }
+    button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 12px 24px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 10px 5px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .btn-show {
+      background-color: #2196F3;
+    }
+    .btn-show:hover {
+      background-color: #0b7dda;
+    }
+    .options {
+      margin: 20px 0;
+      text-align: left;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    /* Style cho canvas */
+    #drawingCanvas {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #fff;
+      cursor: crosshair;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hiragana Practice</h1>
+  <p>Look at the romaji sound, write the hiragana character in your notebook, then check your answer!</p>
+  
+  <div class="options">
+    <h3>Choose Character Groups:</h3>
+    <div class="checkbox-group">
+      <label class="checkbox-label"><input type="checkbox" id="basic-vowels" checked> Basic Vowels (a, i, u, e, o)</label>
+      <label class="checkbox-label"><input type="checkbox" id="k-group" checked> K-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="s-group" checked> S-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="t-group" checked> T-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="n-group" checked> N-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="h-group" checked> H-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="m-group" checked> M-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="y-group" checked> Y-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="r-group" checked> R-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="w-group" checked> W-group & N</label>
+      <label class="checkbox-label"><input type="checkbox" id="dakuten" checked> Dakuten/Handakuten Characters</label>
+    </div>
+    <button id="selectAll">Select All</button>
+    <button id="deselectAll">Deselect All</button>
+  </div>
+  
+  <div class="card">
+    <div class="romaji" id="romaji"></div>
+    <div class="answer" id="answer"></div>
+    
+    <button class="btn-show" id="showAnswer">Show Answer</button>
+    <button id="newCharacter">Generate New Character</button>
+  </div>
+
+  <!-- Khung vẽ -->
+  <div class="drawing-container">
+    <h2>Drawing Pad</h2>
+    <canvas id="drawingCanvas" width="500" height="300"></canvas>
+    <br>
+    <button id="clearCanvas">Clear Drawing</button>
+  </div>
+  
+  <script>
+    // --- Phần xử lý Hiragana ---
+    const hiraganaGroups = {
+      'basic-vowels': { 'a': 'あ', 'i': 'い', 'u': 'う', 'e': 'え', 'o': 'お' },
+      'k-group': { 'ka': 'か', 'ki': 'き', 'ku': 'く', 'ke': 'け', 'ko': 'こ' },
+      's-group': { 'sa': 'さ', 'shi': 'し', 'su': 'す', 'se': 'せ', 'so': 'そ' },
+      't-group': { 'ta': 'た', 'chi': 'ち', 'tsu': 'つ', 'te': 'て', 'to': 'と' },
+      'n-group': { 'na': 'な', 'ni': 'に', 'nu': 'ぬ', 'ne': 'ね', 'no': 'の' },
+      'h-group': { 'ha': 'は', 'hi': 'ひ', 'fu': 'ふ', 'he': 'へ', 'ho': 'ほ' },
+      'm-group': { 'ma': 'ま', 'mi': 'み', 'mu': 'む', 'me': 'め', 'mo': 'も' },
+      'y-group': { 'ya': 'や', 'yu': 'ゆ', 'yo': 'よ' },
+      'r-group': { 'ra': 'ら', 'ri': 'り', 'ru': 'る', 're': 'れ', 'ro': 'ろ' },
+      'w-group': { 'wa': 'わ', 'wo': 'を', 'n': 'ん' },
+      'dakuten': {
+          'ga': 'が', 'gi': 'ぎ', 'gu': 'ぐ', 'ge': 'げ', 'go': 'ご',
+          'za': 'ざ', 'ji': 'じ', 'zu': 'ず', 'ze': 'ぜ', 'zo': 'ぞ',
+          'da': 'だ', 'di': 'ぢ', 'du': 'づ', 'de': 'で', 'do': 'ど',
+          'ba': 'ば', 'bi': 'び', 'bu': 'ぶ', 'be': 'べ', 'bo': 'ぼ',
+          'pa': 'ぱ', 'pi': 'ぴ', 'pu': 'ぷ', 'pe': 'ぺ', 'po': 'ぽ'
+      }
+    };
+
+    const romajiElement = document.getElementById('romaji');
+    const answerElement = document.getElementById('answer');
+    const showAnswerBtn = document.getElementById('showAnswer');
+    const newCharacterBtn = document.getElementById('newCharacter');
+    const selectAllBtn = document.getElementById('selectAll');
+    const deselectAllBtn = document.getElementById('deselectAll');
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    let currentRomaji = '';
+
+    function generateRandomRomaji() {
+      const selectedGroups = [];
+      checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+          selectedGroups.push(checkbox.id);
+        }
+      });
+      if (selectedGroups.length === 0) {
+        return null;
+      }
+      const availableRomaji = {};
+      selectedGroups.forEach(group => {
+        Object.assign(availableRomaji, hiraganaGroups[group]);
+      });
+      const romajis = Object.keys(availableRomaji);
+      const randomIndex = Math.floor(Math.random() * romajis.length);
+      return {
+        romaji: romajis[randomIndex],
+        hiragana: availableRomaji[romajis[randomIndex]]
+      };
+    }
+
+    function showNewCharacter() {
+      answerElement.classList.remove('visible');
+      const result = generateRandomRomaji();
+      if (result === null) {
+        romajiElement.textContent = 'Select at least one group';
+        answerElement.textContent = '';
+        return;
+      }
+      currentRomaji = result.romaji;
+      romajiElement.textContent = currentRomaji;
+      answerElement.textContent = result.hiragana;
+    }
+
+    function showAnswer() {
+      answerElement.classList.add('visible');
+    }
+
+    function selectAll() {
+      checkboxes.forEach(checkbox => checkbox.checked = true);
+      showNewCharacter();
+    }
+
+    function deselectAll() {
+      checkboxes.forEach(checkbox => checkbox.checked = false);
+      showNewCharacter();
+    }
+
+    showAnswerBtn.addEventListener('click', showAnswer);
+    newCharacterBtn.addEventListener('click', showNewCharacter);
+    selectAllBtn.addEventListener('click', selectAll);
+    deselectAllBtn.addEventListener('click', deselectAll);
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', showNewCharacter);
+    });
+    showNewCharacter();
+
+    // --- Phần xử lý Drawing Canvas ---
+    const canvas = document.getElementById('drawingCanvas');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false, lastX = 0, lastY = 0;
+
+    function startDrawing(e) {
+      isDrawing = true;
+      const rect = canvas.getBoundingClientRect();
+      lastX = e.clientX - rect.left;
+      lastY = e.clientY - rect.top;
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const currentX = e.clientX - rect.left;
+      const currentY = e.clientY - rect.top;
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(currentX, currentY);
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      lastX = currentX;
+      lastY = currentY;
+    }
+
+    function stopDrawing() {
+      isDrawing = false;
+    }
+
+    // Sự kiện cho chuột
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+
+    // Xử lý nút clear canvas
+    document.getElementById('clearCanvas').addEventListener('click', function() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+  </script>
+</body>
+  </html>
