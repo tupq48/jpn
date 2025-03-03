@@ -1,109 +1,320 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Japanese Character Practice</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-            background-color: #f5f5f5;
-        }
-        .card {
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            background-color: white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .romaji {
-            font-size: 72px;
-            margin: 30px 0;
-            height: 80px;
-            font-weight: bold;
-            color: #333;
-        }
-        .answer {
-            font-size: 100px;
-            margin: 30px 0;
-            height: 120px;
-            opacity: 0;
-        }
-        .visible {
-            opacity: 1;
-        }
-        button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 12px 24px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 10px 5px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .btn-show {
-            background-color: #2196F3;
-        }
-        .btn-show:hover {
-            background-color: #0b7dda;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Japanese Character Practice</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+      background-color: #f5f5f5;
+    }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .romaji {
+      font-size: 72px;
+      margin: 30px 0;
+      height: 80px;
+      font-weight: bold;
+      color: #333;
+    }
+    .answer {
+      font-size: 100px;
+      margin: 30px 0;
+      height: 120px;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+    .visible {
+      opacity: 1;
+    }
+    button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 12px 24px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 10px 5px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .btn-show {
+      background-color: #2196F3;
+    }
+    .btn-show:hover {
+      background-color: #0b7dda;
+    }
+    .options {
+      margin: 20px 0;
+      text-align: left;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    h1, h3 {
+      color: #333;
+    }
+    .script-options {
+      margin: 20px 0;
+      text-align: left;
+    }
+    .script-options label {
+      margin-right: 15px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Japanese Character Practice</h1>
-    <p>Look at the romaji sound, write the corresponding character in your notebook, then check your answer!</p>
-    
-    <div class="card">
-        <div class="romaji" id="romaji"></div>
-        <div class="answer" id="answer"></div>
-        
-        <button class="btn-show" id="showAnswer">Show Answer</button>
-        <button id="newCharacter">Generate New Character</button>
+  <h1>Japanese Character Practice</h1>
+  <p>Look at the romaji sound, write the corresponding character in your notebook, then check your answer!</p>
+
+  <div class="options">
+    <h3>Choose Character Groups:</h3>
+    <div class="checkbox-group">
+      <label class="checkbox-label"><input type="checkbox" id="basic-vowels" checked> Basic Vowels (a, i, u, e, o)</label>
+      <label class="checkbox-label"><input type="checkbox" id="k-group" checked> K-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="s-group" checked> S-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="t-group" checked> T-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="n-group" checked> N-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="h-group" checked> H-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="m-group" checked> M-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="y-group" checked> Y-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="r-group" checked> R-group</label>
+      <label class="checkbox-label"><input type="checkbox" id="w-group" checked> W-group & N</label>
+      <label class="checkbox-label"><input type="checkbox" id="dakuten" checked> Dakuten/Handakuten Characters</label>
     </div>
+    <button id="selectAll">Select All</button>
+    <button id="deselectAll">Deselect All</button>
+  </div>
+
+  <div class="script-options">
+    <h3>Choose Script:</h3>
+    <label><input type="radio" name="script" value="hiragana"> Hiragana</label>
+    <label><input type="radio" name="script" value="katakana"> Katakana</label>
+    <label><input type="radio" name="script" value="both" checked> Both</label>
+  </div>
+
+  <div class="card">
+    <div class="romaji" id="romaji"></div>
+    <div class="answer" id="answer"></div>
     
-    <script>
-        const characters = {
-            'a': ['あ', 'ア'], 'i': ['い', 'イ'], 'u': ['う', 'ウ'], 'e': ['え', 'エ'], 'o': ['お', 'オ'],
-            'ka': ['か', 'カ'], 'ki': ['き', 'キ'], 'ku': ['く', 'ク'], 'ke': ['け', 'ケ'], 'ko': ['こ', 'コ'],
-            'sa': ['さ', 'サ'], 'shi': ['し', 'シ'], 'su': ['す', 'ス'], 'se': ['せ', 'セ'], 'so': ['そ', 'ソ'],
-            'ta': ['た', 'タ'], 'chi': ['ち', 'チ'], 'tsu': ['つ', 'ツ'], 'te': ['て', 'テ'], 'to': ['と', 'ト']
-        };
-        
-        const romajiElement = document.getElementById('romaji');
-        const answerElement = document.getElementById('answer');
-        const showAnswerBtn = document.getElementById('showAnswer');
-        const newCharacterBtn = document.getElementById('newCharacter');
-        
-        function generateNewCharacter() {
-            const romajiKeys = Object.keys(characters);
-            const randomIndex = Math.floor(Math.random() * romajiKeys.length);
-            const selectedRomaji = romajiKeys[randomIndex];
-            
-            romajiElement.textContent = selectedRomaji;
-            answerElement.textContent = characters[selectedRomaji].join(' / ');
-            answerElement.classList.remove('visible');
+    <button class="btn-show" id="showAnswer">Show Answer</button>
+    <button id="newCharacter">Generate New Character</button>
+  </div>
+
+  <script>
+    // Character mapping cho Hiragana và Katakana theo nhóm
+    const characterGroups = {
+      'basic-vowels': {
+        'a': { hiragana: 'あ', katakana: 'ア' },
+        'i': { hiragana: 'い', katakana: 'イ' },
+        'u': { hiragana: 'う', katakana: 'ウ' },
+        'e': { hiragana: 'え', katakana: 'エ' },
+        'o': { hiragana: 'お', katakana: 'オ' }
+      },
+      'k-group': {
+        'ka': { hiragana: 'か', katakana: 'カ' },
+        'ki': { hiragana: 'き', katakana: 'キ' },
+        'ku': { hiragana: 'く', katakana: 'ク' },
+        'ke': { hiragana: 'け', katakana: 'ケ' },
+        'ko': { hiragana: 'こ', katakana: 'コ' }
+      },
+      's-group': {
+        'sa': { hiragana: 'さ', katakana: 'サ' },
+        'shi': { hiragana: 'し', katakana: 'シ' },
+        'su': { hiragana: 'す', katakana: 'ス' },
+        'se': { hiragana: 'せ', katakana: 'セ' },
+        'so': { hiragana: 'そ', katakana: 'ソ' }
+      },
+      't-group': {
+        'ta': { hiragana: 'た', katakana: 'タ' },
+        'chi': { hiragana: 'ち', katakana: 'チ' },
+        'tsu': { hiragana: 'つ', katakana: 'ツ' },
+        'te': { hiragana: 'て', katakana: 'テ' },
+        'to': { hiragana: 'と', katakana: 'ト' }
+      },
+      'n-group': {
+        'na': { hiragana: 'な', katakana: 'ナ' },
+        'ni': { hiragana: 'に', katakana: 'ニ' },
+        'nu': { hiragana: 'ぬ', katakana: 'ヌ' },
+        'ne': { hiragana: 'ね', katakana: 'ネ' },
+        'no': { hiragana: 'の', katakana: 'ノ' }
+      },
+      'h-group': {
+        'ha': { hiragana: 'は', katakana: 'ハ' },
+        'hi': { hiragana: 'ひ', katakana: 'ヒ' },
+        'fu': { hiragana: 'ふ', katakana: 'フ' },
+        'he': { hiragana: 'へ', katakana: 'ヘ' },
+        'ho': { hiragana: 'ほ', katakana: 'ホ' }
+      },
+      'm-group': {
+        'ma': { hiragana: 'ま', katakana: 'マ' },
+        'mi': { hiragana: 'み', katakana: 'ミ' },
+        'mu': { hiragana: 'む', katakana: 'ム' },
+        'me': { hiragana: 'め', katakana: 'メ' },
+        'mo': { hiragana: 'も', katakana: 'モ' }
+      },
+      'y-group': {
+        'ya': { hiragana: 'や', katakana: 'ヤ' },
+        'yu': { hiragana: 'ゆ', katakana: 'ユ' },
+        'yo': { hiragana: 'よ', katakana: 'ヨ' }
+      },
+      'r-group': {
+        'ra': { hiragana: 'ら', katakana: 'ラ' },
+        'ri': { hiragana: 'り', katakana: 'リ' },
+        'ru': { hiragana: 'る', katakana: 'ル' },
+        're': { hiragana: 'れ', katakana: 'レ' },
+        'ro': { hiragana: 'ろ', katakana: 'ロ' }
+      },
+      'w-group': {
+        'wa': { hiragana: 'わ', katakana: 'ワ' },
+        'wo': { hiragana: 'を', katakana: 'ヲ' },
+        'n':  { hiragana: 'ん', katakana: 'ン' }
+      },
+      'dakuten': {
+        'ga': { hiragana: 'が', katakana: 'ガ' },
+        'gi': { hiragana: 'ぎ', katakana: 'ギ' },
+        'gu': { hiragana: 'ぐ', katakana: 'グ' },
+        'ge': { hiragana: 'げ', katakana: 'ゲ' },
+        'go': { hiragana: 'ご', katakana: 'ゴ' },
+        'za': { hiragana: 'ざ', katakana: 'ザ' },
+        'ji': { hiragana: 'じ', katakana: 'ジ' },
+        'zu': { hiragana: 'ず', katakana: 'ズ' },
+        'ze': { hiragana: 'ぜ', katakana: 'ゼ' },
+        'zo': { hiragana: 'ぞ', katakana: 'ゾ' },
+        'da': { hiragana: 'だ', katakana: 'ダ' },
+        'di': { hiragana: 'ぢ', katakana: 'ヂ' },
+        'du': { hiragana: 'づ', katakana: 'ヅ' },
+        'de': { hiragana: 'で', katakana: 'デ' },
+        'do': { hiragana: 'ど', katakana: 'ド' },
+        'ba': { hiragana: 'ば', katakana: 'バ' },
+        'bi': { hiragana: 'び', katakana: 'ビ' },
+        'bu': { hiragana: 'ぶ', katakana: 'ブ' },
+        'be': { hiragana: 'べ', katakana: 'ベ' },
+        'bo': { hiragana: 'ぼ', katakana: 'ボ' },
+        'pa': { hiragana: 'ぱ', katakana: 'パ' },
+        'pi': { hiragana: 'ぴ', katakana: 'ピ' },
+        'pu': { hiragana: 'ぷ', katakana: 'プ' },
+        'pe': { hiragana: 'ぺ', katakana: 'ペ' },
+        'po': { hiragana: 'ぽ', katakana: 'ポ' }
+      }
+    };
+    
+    const romajiElement = document.getElementById('romaji');
+    const answerElement = document.getElementById('answer');
+    const showAnswerBtn = document.getElementById('showAnswer');
+    const newCharacterBtn = document.getElementById('newCharacter');
+    const selectAllBtn = document.getElementById('selectAll');
+    const deselectAllBtn = document.getElementById('deselectAll');
+    const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+    const scriptRadios = document.querySelectorAll('input[name="script"]');
+    
+    let currentRomaji = '';
+    let currentCharacter = {};
+    
+    function getSelectedScript() {
+      let selectedScript = 'both'; // mặc định hiển thị cả 2
+      scriptRadios.forEach(radio => {
+        if (radio.checked) {
+          selectedScript = radio.value;
         }
-        
-        showAnswerBtn.addEventListener('click', () => {
-            answerElement.classList.add('visible');
-        });
-        
-        newCharacterBtn.addEventListener('click', generateNewCharacter);
-        
-        generateNewCharacter();
-    </script>
+      });
+      return selectedScript;
+    }
+    
+    function generateNewCharacter() {
+      // Lấy các nhóm được chọn
+      const selectedGroups = [];
+      checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+          selectedGroups.push(checkbox.id);
+        }
+      });
+      
+      // Nếu không có nhóm nào được chọn
+      if (selectedGroups.length === 0) {
+        alert('Please select at least one character group');
+        return;
+      }
+      
+      // Gom tất cả ký tự từ các nhóm được chọn
+      const allCharacters = {};
+      selectedGroups.forEach(group => {
+        Object.assign(allCharacters, characterGroups[group]);
+      });
+      
+      // Lấy mảng các key (romaji)
+      const romajiKeys = Object.keys(allCharacters);
+      
+      // Chọn ngẫu nhiên một romaji
+      const randomIndex = Math.floor(Math.random() * romajiKeys.length);
+      currentRomaji = romajiKeys[randomIndex];
+      currentCharacter = allCharacters[currentRomaji];
+      
+      // Cập nhật hiển thị
+      romajiElement.textContent = currentRomaji;
+      updateAnswerDisplay();
+      answerElement.classList.remove('visible');
+    }
+    
+    function updateAnswerDisplay() {
+      const script = getSelectedScript();
+      let displayText = '';
+      if (script === 'hiragana') {
+        displayText = currentCharacter.hiragana;
+      } else if (script === 'katakana') {
+        displayText = currentCharacter.katakana;
+      } else { // both
+        displayText = currentCharacter.hiragana + ' / ' + currentCharacter.katakana;
+      }
+      answerElement.textContent = displayText;
+    }
+    
+    showAnswerBtn.addEventListener('click', () => {
+      answerElement.classList.add('visible');
+    });
+    
+    newCharacterBtn.addEventListener('click', generateNewCharacter);
+    
+    selectAllBtn.addEventListener('click', () => {
+      checkboxes.forEach(checkbox => checkbox.checked = true);
+    });
+    
+    deselectAllBtn.addEventListener('click', () => {
+      checkboxes.forEach(checkbox => checkbox.checked = false);
+    });
+    
+    // Cập nhật kết quả nếu thay đổi tùy chọn script
+    scriptRadios.forEach(radio => {
+      radio.addEventListener('change', updateAnswerDisplay);
+    });
+    
+    // Khởi tạo với một ký tự mới
+    generateNewCharacter();
+  </script>
 </body>
 </html>
