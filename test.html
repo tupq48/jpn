@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japanese Character Practice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .romaji {
+            font-size: 72px;
+            margin: 30px 0;
+            height: 80px;
+            font-weight: bold;
+            color: #333;
+        }
+        .answer {
+            font-size: 100px;
+            margin: 30px 0;
+            height: 120px;
+            opacity: 0;
+        }
+        .visible {
+            opacity: 1;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .btn-show {
+            background-color: #2196F3;
+        }
+        .btn-show:hover {
+            background-color: #0b7dda;
+        }
+    </style>
+</head>
+<body>
+    <h1>Japanese Character Practice</h1>
+    <p>Look at the romaji sound, write the corresponding character in your notebook, then check your answer!</p>
+    
+    <div class="card">
+        <div class="romaji" id="romaji"></div>
+        <div class="answer" id="answer"></div>
+        
+        <button class="btn-show" id="showAnswer">Show Answer</button>
+        <button id="newCharacter">Generate New Character</button>
+    </div>
+    
+    <script>
+        const characters = {
+            'a': ['あ', 'ア'], 'i': ['い', 'イ'], 'u': ['う', 'ウ'], 'e': ['え', 'エ'], 'o': ['お', 'オ'],
+            'ka': ['か', 'カ'], 'ki': ['き', 'キ'], 'ku': ['く', 'ク'], 'ke': ['け', 'ケ'], 'ko': ['こ', 'コ'],
+            'sa': ['さ', 'サ'], 'shi': ['し', 'シ'], 'su': ['す', 'ス'], 'se': ['せ', 'セ'], 'so': ['そ', 'ソ'],
+            'ta': ['た', 'タ'], 'chi': ['ち', 'チ'], 'tsu': ['つ', 'ツ'], 'te': ['て', 'テ'], 'to': ['と', 'ト']
+        };
+        
+        const romajiElement = document.getElementById('romaji');
+        const answerElement = document.getElementById('answer');
+        const showAnswerBtn = document.getElementById('showAnswer');
+        const newCharacterBtn = document.getElementById('newCharacter');
+        
+        function generateNewCharacter() {
+            const romajiKeys = Object.keys(characters);
+            const randomIndex = Math.floor(Math.random() * romajiKeys.length);
+            const selectedRomaji = romajiKeys[randomIndex];
+            
+            romajiElement.textContent = selectedRomaji;
+            answerElement.textContent = characters[selectedRomaji].join(' / ');
+            answerElement.classList.remove('visible');
+        }
+        
+        showAnswerBtn.addEventListener('click', () => {
+            answerElement.classList.add('visible');
+        });
+        
+        newCharacterBtn.addEventListener('click', generateNewCharacter);
+        
+        generateNewCharacter();
+    </script>
+</body>
+</html>
